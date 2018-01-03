@@ -4,6 +4,11 @@ function limStack(i_lim) {
     Array.call(this);
 
     this.limit = i_lim;
+
+    this.getLimit = function() {
+        return this.limit;
+    }
+
     /*
 
 
@@ -17,38 +22,53 @@ function limStack(i_lim) {
     */
 }
 
+function randStacks(nlists, maxsize) {
+
+    var stacklist = new Array(nlists);
+
+    var curlimStack;
+
+    for (i = 0; i < nlists; i++) {
+
+        var curStackSize = Math.floor((Math.random() * maxsize) + 1);;
+        curlimStack = new limStack(curStackSize);
+
+        for (j = 0; j < curStackSize; j++) {
+
+            curlimStack.push(j);
+        }
+        stacklist[i] = curlimStack;
+    }
+    return stacklist;
+
+}
+
 // inherit Person
 limStack.prototype = Object.create(Array.prototype);
 
 // correct the constructor pointer because it points to Person
 limStack.prototype.constructor = limStack;
 
+
+
 function runCode() {
 
 
+
+    document.getElementById("console").innerHTML = "\n " + " 1";
+
+
+    var testStack = randStacks(3, 4);
+
+    document.getElementById("console").innerHTML = "\n " + testStack[0].getLimit();
+
+
     /*
-    function Stack(i_lim) {
-    
-        i_limit;
-
-        this.stac = new Array();
-
-        this.pop = function () {
-            return this.stac.pop();
-        }
-
-        this.push = function (item) {
-            this.stac.push(item);
-        }
-    }
-    */
-
-    //var stack = new Array;
     var stack = new limStack(3);
 
     alert("hello world");
 
-    
+
     stack.push("A");
     stack.push("B");
     stack.push("C");
@@ -59,24 +79,7 @@ function runCode() {
 
     document.getElementById("console").innerHTML += "\n " + stack.limit;
 
-    /*
-    
-        function Stack(i_lim) {
-    
-            i_limit;
-    
-            this.stac = new Array();
-    
-            this.pop = function () {
-                return this.stac.pop();
-            }
-    
-            this.push = function (item) {
-                this.stac.push(item);
-            }
-        }
-    
-        */
+*/
 }
 
 
