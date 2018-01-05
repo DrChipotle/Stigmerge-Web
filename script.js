@@ -135,26 +135,33 @@ function paintList(stacklist) {
 
 
     ilabels = new Array(stacklist.length);
-    isize= new Array(stacklist.length);
-    
-    for(i=0 ; i< stacklist.length ; i++){
+    isize = new Array(stacklist.length);
 
-        ilabels[i]=i;
-        isize[i] = stacklist[i].length; 
+    for (i = 0; i < stacklist.length; i++) {
 
+        ilabels[i] = i;
+        isize[i] = stacklist[i].length;
     }
-
-
     //alert(stacklist);
     var barData = {
         labels: ilabels,
         datasets: [
             {
+                label: 'list1',
                 data: isize,
                 backgroundColor: "#4ACAB4"
-            
-            }]
+
+            },
+            {
+                label: 'list2',
+                data: ilabels,
+                backgroundColor: "#555555"
+            }
+
+        ]
     };
+
+    
     // Get the context of the canvas element we want to select
     var ctx = document.getElementById("myData").getContext("2d");
     //new Chart(ctx).Pie(pieData);
@@ -162,7 +169,23 @@ function paintList(stacklist) {
      TypeError: (intermediate value).Pie is not a function" */
     var myPieChart = new Chart(ctx, {
         type: 'bar',
-        data: barData
+        data: barData,
+        options: {
+            scales: {
+                yAxes: [{
+                    stacked: true,
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }],
+                xAxes: [{
+                    stacked: true,
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
 
     });
 
