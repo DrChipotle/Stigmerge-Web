@@ -5,11 +5,11 @@ function limStack(i_lim) {
 
     this.limit = i_lim;
 
-    this.getLimit = function() {
+    this.getLimit = function () {
         return this.limit;
     }
 
-    
+
     /*
 
 
@@ -26,7 +26,6 @@ function limStack(i_lim) {
 function randStacks(nlists, maxsize) {
 
     var stacklist = new Array(nlists);
-
     var curlimStack;
 
     for (i = 0; i < nlists; i++) {
@@ -40,6 +39,8 @@ function randStacks(nlists, maxsize) {
         }
         stacklist[i] = curlimStack;
     }
+
+    paintList(stacklist);
     return stacklist;
 
 }
@@ -59,7 +60,7 @@ function runCode() {
     document.getElementById("console").innerHTML = "\n " + " 1";
 
 
-    var testStack = randStacks(3, 4);
+    var testStack = randStacks(10, 10);
 
     document.getElementById("console").innerHTML = "\n " + testStack[0].getLimit();
 
@@ -101,23 +102,69 @@ function myMove() {
 }
 
 
-new Chart(document.getElementById("bar-chart"), {
-    type: 'bar',
-    data: {
-      labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-      datasets: [
-        {
-          label: "Population (millions)",
-          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-          data: [2478,5267,734,784,433]
-        }
-      ]
-    },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: 'Predicted world population (millions) in 2050'
-      }
+function paint() {
+
+    var pieData = {
+        labels: ["Purple", "Green", "Orange", "Yellow"],
+        datasets: [
+            {
+                data: [20, 40, 10, 30],
+                backgroundColor: [
+                    "#878BB6",
+                    "#4ACAB4",
+                    "#FF8153",
+                    "#FFEA88"
+                ]
+            }]
+    };
+    // Get the context of the canvas element we want to select
+    var ctx = document.getElementById("myData").getContext("2d");
+    //new Chart(ctx).Pie(pieData);
+    /* New way to instantiate so that it do not thows Uncaught
+     TypeError: (intermediate value).Pie is not a function" */
+    var myPieChart = new Chart(ctx, {
+        type: 'bar',
+        data: pieData
+
+    });
+
+
+}
+
+function paintList(stacklist) {
+
+
+    ilabels = new Array(stacklist.length);
+    isize= new Array(stacklist.length);
+    
+    for(i=0 ; i< stacklist.length ; i++){
+
+        ilabels[i]=i;
+        isize[i] = stacklist[i].length; 
+
     }
-});
+
+
+    //alert(stacklist);
+    var barData = {
+        labels: ilabels,
+        datasets: [
+            {
+                data: isize,
+                backgroundColor: "#4ACAB4"
+            
+            }]
+    };
+    // Get the context of the canvas element we want to select
+    var ctx = document.getElementById("myData").getContext("2d");
+    //new Chart(ctx).Pie(pieData);
+    /* New way to instantiate so that it do not thows Uncaught
+     TypeError: (intermediate value).Pie is not a function" */
+    var myPieChart = new Chart(ctx, {
+        type: 'bar',
+        data: barData
+
+    });
+
+
+}

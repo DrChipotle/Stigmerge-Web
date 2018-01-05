@@ -21,10 +21,10 @@
 
 
 <head>
-    <title>TEST</title>
+    <meta charset="utf-8">
+    <title>JS Bin</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js" type="text/javascript"></script>
     <script src="script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.js" type="text/javascript"></script>
-    
 </head>
 
 <body>
@@ -32,45 +32,30 @@
     <h1>This is a heading</h1>
     <p>This is a paragraph.</p>
     
-    
-
-    <canvas id="countries" width="600" height="400"></canvas>
-        <script>
-        var pieData = [
-            {
-                value: 20,
-                color:"#878BB6"
-            },
-            {
-                value : 40,
-                color : "#4ACAB4"
-            },
-            {
-                value : 10,
-                color : "#FF8153"
-            },
-            {
-                value : 30,
-                color : "#FFEA88"
-            }
-        ];
-        // Get the context of the canvas element we want to select
-        var countries= document.getElementById("countries").getContext("2d");
-        new Chart(countries).Pie(pieData);
-    </script>
-
 
     <p id="console">CONSOLE</p>
 
-    <button onclick="runCode()">Click Me</button>
+    <button onclick="runCode()">New list</button>
 
+    <button onclick="paint()">Paint</button>
+
+
+    <!--
     <button onclick="myMove()">Anim</button>
 
 
     <div id="myContainer">
         <div id="myAnimation">My animation will go here</div>
     </div>
+-->
 
+    <canvas id="myData" width="800" height="200"></canvas>
+
+
+    <script> 
+
+        
+    </script>
 
 </body>
 
