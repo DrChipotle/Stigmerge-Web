@@ -147,13 +147,13 @@ function paintList(stacklist) {
         labels: ilabels,
         datasets: [
             {
-                label: 'list1',
+                label: 'Filled',
                 data: isize,
                 backgroundColor: "#4ACAB4"
 
             },
             {
-                label: 'list2',
+                label: 'Empty',
                 data: ilabels,
                 backgroundColor: "#555555"
             }
