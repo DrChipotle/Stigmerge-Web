@@ -1,4 +1,9 @@
 
+var stacksize = 5;
+var listsize = 5;
+var mainStack;
+
+
 function limStack(i_lim) {
 
     Array.call(this);
@@ -23,6 +28,25 @@ function limStack(i_lim) {
     */
 }
 
+
+/*
+
+        var curStackSize = getRandomInt(1, maxsize);
+        curlimStack = new limStack(curStackSize);
+
+        for (j = 0; j < getRandomInt(0, curStackSize); j++) {
+
+
+
+
+                    var curStackSize = Math.floor((Math.random() * maxsize) + 1);
+        curlimStack = new limStack(curStackSize);
+
+        for (j = 0; j < Math.floor((Math.random() * curStackSize) + 1); j++) {
+*/
+
+
+//TODO stacks arent empty
 function randStacks(nlists, maxsize) {
 
     var stacklist = new Array(nlists);
@@ -30,10 +54,10 @@ function randStacks(nlists, maxsize) {
 
     for (i = 0; i < nlists; i++) {
 
-        var curStackSize = Math.floor((Math.random() * maxsize) + 1);;
+        var curStackSize = getRandomInt(1, maxsize);
         curlimStack = new limStack(curStackSize);
 
-        for (j = 0; j < curStackSize; j++) {
+        for (j = 0; j < getRandomInt(0, curStackSize); j++) {
 
             curlimStack.push(j);
         }
@@ -60,9 +84,9 @@ function runCode() {
     document.getElementById("console").innerHTML = "\n " + " 1";
 
 
-    var testStack = randStacks(10, 10);
+    mainStack = randStacks(listsize, stacksize);
 
-    document.getElementById("console").innerHTML = "\n " + testStack[0].getLimit();
+    document.getElementById("console").innerHTML = "\n " + testStack[0].getLimit() + "---" + testStack[0].length;
 
 
     /*
@@ -84,7 +108,36 @@ function runCode() {
 */
 }
 
+//Inclusive values
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
+function randChange() {
+    //Pick a random (non empty) stack (sender)
+
+    do {
+        var sender = mainStack[getRandomInt(0, listsize)];
+
+    } while (sender.length == 0)
+
+    //Pick a different random (non full) stack (receiver)
+
+    do {
+        var receiver = mainStack[getRandomInt(0, listsize)];
+
+    } while (receiver.limit - receiver.length == 0)
+
+
+    document.getElementById("console").innerHTML = "\n " + sender.length + "/" + sender.limit + "_____" + receiver.length + "/" + receiver.limit;
+    //Move
+
+    //var temp = sender.pop();
+    receiver.push(sender.pop());
+
+    paintList(mainStack)
+
+}
 
 function myMove() {
     var elem = document.getElementById("myAnimation");
@@ -134,17 +187,17 @@ function paint() {
 function paintList(stacklist) {
 
 
-    ilabels = new Array(stacklist.length);
+    ilimit = new Array(stacklist.length);
     isize = new Array(stacklist.length);
 
     for (i = 0; i < stacklist.length; i++) {
 
-        ilabels[i] = i;
+        ilimit[i] = stacklist[i].getLimit() - stacklist[i].length;
         isize[i] = stacklist[i].length;
     }
     //alert(stacklist);
     var barData = {
-        labels: ilabels,
+        labels: ilimit,
         datasets: [
             {
                 label: 'Filled',
@@ -154,14 +207,14 @@ function paintList(stacklist) {
             },
             {
                 label: 'Empty',
-                data: ilabels,
+                data: ilimit,
                 backgroundColor: "#555555"
             }
 
         ]
     };
 
-    
+
     // Get the context of the canvas element we want to select
     var ctx = document.getElementById("myData").getContext("2d");
     //new Chart(ctx).Pie(pieData);
@@ -175,7 +228,8 @@ function paintList(stacklist) {
                 yAxes: [{
                     stacked: true,
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        suggestedMax: stacksize
                     }
                 }],
                 xAxes: [{
@@ -184,6 +238,11 @@ function paintList(stacklist) {
                         beginAtZero: true
                     }
                 }]
+            },
+
+            hover: {
+                // Overrides the global setting
+                mode: 'index'
             }
         }
 
