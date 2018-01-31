@@ -1,6 +1,6 @@
 
-var stacksize = 5;
-var listsize = 5;
+var stacksize = 15;
+var listsize = 15;
 var mainStack;
 
 
