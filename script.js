@@ -1,8 +1,63 @@
 
-var stacksize = 5;
-var listsize = 5;
+
+
+/*
+TODOS
+
+---PENDING REQUIREMENTS---
+Set up debbuging
+
+High entropy list maker
+
+Restrict exchange range
+
+Add variable control over list parameters
+
+---IDEAS---
+change color of changing rows
+
+
+---FIXES---
+Check random list maker
+Check random int function (?)
+        DONE----Random  x10 and x100 fix: Separate into fucmctions and call the algorithm
+Update graphics instead of redrawing: http://www.chartjs.org/docs/latest/developers/updates.html
+Fix bar index markers
+Fix list changing when hovering
+
+Organize code
+
+Change HTML to follow good practice lists
+    Programatic event handlers
+
+
+
+Good practices list
+https://en.wikipedia.org/wiki/Unobtrusive_JavaScript
+    Add listeners to the buttons
+    Set a function per button
+    Separate GUI changes from function code
+
+    Some (?) Documentation
+
+
+
+*/
+
+//Defines the max possible size of an individual stack
+var stacksize = 10;
+
+//Defines the number of stacks
+var listsize = 10;
+
+//Main list of stacks
 var mainStack;
 
+
+
+/*
+    ------------------------------OBJECTS------------------------------
+*/
 
 function limStack(i_lim) {
 
@@ -27,48 +82,6 @@ function limStack(i_lim) {
     }
     */
 }
-
-
-/*
-
-        var curStackSize = getRandomInt(1, maxsize);
-        curlimStack = new limStack(curStackSize);
-
-        for (j = 0; j < getRandomInt(0, curStackSize); j++) {
-
-
-
-
-                    var curStackSize = Math.floor((Math.random() * maxsize) + 1);
-        curlimStack = new limStack(curStackSize);
-
-        for (j = 0; j < Math.floor((Math.random() * curStackSize) + 1); j++) {
-*/
-
-
-//TODO stacks arent empty
-function randStacks(nlists, maxsize) {
-
-    var stacklist = new Array(nlists);
-    var curlimStack;
-
-    for (i = 0; i < nlists; i++) {
-
-        var curStackSize = getRandomInt(1, maxsize);
-        curlimStack = new limStack(curStackSize);
-
-        for (j = 0; j < getRandomInt(0, curStackSize); j++) {
-
-            curlimStack.push(j);
-        }
-        stacklist[i] = curlimStack;
-    }
-
-    paintList(stacklist);
-    return stacklist;
-
-}
-
 // inherit Person
 limStack.prototype = Object.create(Array.prototype);
 
@@ -76,82 +89,129 @@ limStack.prototype = Object.create(Array.prototype);
 limStack.prototype.constructor = limStack;
 
 
+/*
 
-function runCode() {
-
-
-
-    document.getElementById("console").innerHTML = "\n " + " 1";
-
-
-    mainStack = randStacks(listsize, stacksize);
-
-    document.getElementById("console").innerHTML = "\n " + testStack[0].getLimit() + "---" + testStack[0].length;
-
-
-    /*
-    var stack = new limStack(3);
-
-    alert("hello world");
-
-
-    stack.push("A");
-    stack.push("B");
-    stack.push("C");
-
-    document.getElementById("console").innerHTML = "\n " + stack.pop();
-    document.getElementById("console").innerHTML += "\n " + stack.pop();
-    document.getElementById("console").innerHTML += "\n " + stack.pop();
-
-    document.getElementById("console").innerHTML += "\n " + stack.limit;
+ ------------------------------FUNCTIONS------------------------------
 
 */
+
+//Generates an array of @nlists@ stacks with random size @maxsize@, filled a random amount
+
+function randStacks(nlists, maxsize) {
+
+    var stacklist = new Array(nlists);
+    var curlimStack;
+
+    for (i = 0; i < nlists; i++) {
+
+        var curStackLimit = getRandomInt(1, maxsize);
+        curlimStack = new limStack(curStackLimit);
+
+        var curStackFill = getRandomInt(0, curStackLimit);
+        //console.log("List limit " + curStackLimit + " size " + curStackFill);
+
+        for (j = 0; j < curStackFill; j++) {
+
+            curlimStack.push(j);
+        }
+        stacklist[i] = curlimStack;
+    }
+
+    return stacklist;
+
 }
 
-//Inclusive values
+//Generates a random int between min and max (Inclusive)
+
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+
+//TODO Add timeout (?)
 function randChange() {
+    
     //Pick a random (non empty) stack (sender)
+    document.getElementById("console").innerHTML = "Searching random";
+
+    var sendi;
+    var sender
+
+    var receivei;
+    var receiver;
 
     do {
-        var sender = mainStack[getRandomInt(0, listsize)];
+        sendi = getRandomInt(0, listsize - 1);
+        sender = mainStack[sendi];
 
     } while (sender.length == 0)
 
     //Pick a different random (non full) stack (receiver)
-
     do {
-        var receiver = mainStack[getRandomInt(0, listsize)];
+        receivei = getRandomInt(0, listsize - 1);
+        receiver = mainStack[receivei];
 
-    } while (receiver.limit - receiver.length == 0)
+    } while (receiver.limit - receiver.length == 0 || sendi == receivei)
 
 
-    document.getElementById("console").innerHTML = "\n " + sender.length + "/" + sender.limit + "_____" + receiver.length + "/" + receiver.limit;
+    //document.getElementById("console").innerHTML = "\n " + sender.length + "/" + sender.limit + "_____" + receiver.length + "/" + receiver.limit;
+
+    console.log("Moved element from " + sendi + " to " + receivei);
     //Move
 
     //var temp = sender.pop();
     receiver.push(sender.pop());
 
-    paintList(mainStack)
+}
+
+
+/*
+    ------------------------------GUI------------------------------
+*/
+
+//Creates a new randomized list and calls for redraw
+function b_newRandList() {
+
+    mainStack = randStacks(listsize, stacksize);
+    paintList(mainStack);
 
 }
 
-function myMove() {
-    var elem = document.getElementById("myAnimation");
-    var pos = 0;
-    var id = setInterval(frame, 10);
-    function frame() {
-        if (pos == 350) {
-            clearInterval(id);
-        } else {
-            pos++;
-            elem.style.top = pos + 'px';
-            elem.style.left = pos + 'px';
-        }
+function b_newMinMaxList() {
+
+
+ }
+
+//TODO: change redraw to update
+
+//Calls one random change and updates lists
+function b_randChange() {
+
+    randChange();
+    paintList(mainStack);
+
+
+}
+
+
+function b_randChangex10() {
+
+    for (i = 0; i < 10; i++) {
+        randChange();
+
     }
+    paintList(mainStack);
+
+}
+
+function b_randChangex100() {
+
+    for (i = 0; i < 100; i++) {
+        randChange();
+
+    }
+    paintList(mainStack);
+
 }
 
 
