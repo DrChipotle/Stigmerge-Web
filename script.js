@@ -5,9 +5,9 @@
 TODOS
 
 ---PENDING REQUIREMENTS---
-Set up debbuging
+            DONE----Set up debbuging
 
-High entropy list maker
+High entropy list maker 
 
 Restrict exchange range
 
@@ -18,9 +18,9 @@ change color of changing rows
 
 
 ---FIXES---
-Check random list maker
-Check random int function (?)
-        DONE----Random  x10 and x100 fix: Separate into fucmctions and call the algorithm
+            DONE----Check random list maker
+            DONE----Check random int function (?)
+            DONE----Random  x10 and x100 fix: Separate into fucmctions and call the algorithm
 Update graphics instead of redrawing: http://www.chartjs.org/docs/latest/developers/updates.html
 Fix bar index markers
 Fix list changing when hovering
