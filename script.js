@@ -9,7 +9,7 @@ TODOS
 
 High entropy list maker 
 
-Restrict exchange range
+            DONE----Restrict exchange range
 
             DONE----Add variable control over list parameters
 
@@ -49,6 +49,9 @@ var stacksize = 10;
 
 //Defines the number of stacks
 var listsize = 10;
+
+//Max range for exchanges
+var exchangeRange = 1;
 
 //Main list of stacks
 var mainStack;
@@ -127,21 +130,21 @@ function randStacks(nlists, maxsize) {
 //Generates a random int between min and max (Inclusive)
 
 function getRandomInt(min, max) {
+
+    if (min > max) return getRandomInt(max, min);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
 //TODO Add timeout (?)
-function randChange() {
-    
-    //Pick a random (non empty) stack (sender)
-    document.getElementById("console").innerHTML = "Searching random";
+
+function randChange(range) {
+
+    //Pick a random (non empty) stack (sender). This should work pretty much the same as before
+
 
     var sendi;
     var sender
-
-    var receivei;
-    var receiver;
 
     do {
         sendi = getRandomInt(0, listsize - 1);
@@ -149,9 +152,14 @@ function randChange() {
 
     } while (sender.length == 0)
 
-    //Pick a different random (non full) stack (receiver)
+    //Pick a different random (non full) stack (receiver), now in range
+    var receiveimin = sendi - range >= 0 ? sendi - range : 0;
+
+    var receiveimax = sendi + range <= listsize - 1 ? sendi + range : listsize - 1;
+    var receiver;
+
     do {
-        receivei = getRandomInt(0, listsize - 1);
+        receivei = getRandomInt(receiveimin, receiveimax);
         receiver = mainStack[receivei];
 
     } while (receiver.limit - receiver.length == 0 || sendi == receivei)
@@ -159,14 +167,10 @@ function randChange() {
 
     //document.getElementById("console").innerHTML = "\n " + sender.length + "/" + sender.limit + "_____" + receiver.length + "/" + receiver.limit;
 
-    console.log("Moved element from " + sendi + " to " + receivei);
-    //Move
-
-    //var temp = sender.pop();
+    console.log("Element from " + sendi + " to [" + receiveimin + "," + receiveimax + "]." + " Final = " + receivei);
     receiver.push(sender.pop());
 
 }
-
 
 /*
     ------------------------------GUI------------------------------
@@ -183,14 +187,14 @@ function b_newRandList() {
 function b_newMinMaxList() {
 
 
- }
+}
 
 //TODO: change redraw to update
 
 //Calls one random change and updates lists
 function b_randChange() {
 
-    randChange();
+    randChange(exchangeRange);
     paintList(mainStack);
 
 
@@ -200,7 +204,7 @@ function b_randChange() {
 function b_randChangex10() {
 
     for (i = 0; i < 10; i++) {
-        randChange();
+        randChange(exchangeRange);
 
     }
     paintList(mainStack);
@@ -210,23 +214,30 @@ function b_randChangex10() {
 function b_randChangex100() {
 
     for (i = 0; i < 100; i++) {
-        randChange();
+        randChange(exchangeRange);
 
     }
     paintList(mainStack);
 
 }
 
-function i_changeListN(){
+function i_changeListN() {
 
-    listsize = document.getElementById("listNumberIn").value;
+    listsize = parseInt(document.getElementById("listNumberIn").value);
 
 }
 
-function i_changeListS(){
+function i_changeListS() {
 
-    stacksize = document.getElementById("listSizeIn").value;;
-    
+    stacksize = parseInt(document.getElementById("listSizeIn").value);
+
+}
+
+function i_changeRange() {
+
+    exchangeRange = parseInt(document.getElementById("exchangeRangeIn").value);
+    //console.log(exchangeRange);
+
 }
 
 function paint() {
@@ -263,15 +274,17 @@ function paintList(stacklist) {
 
     ilimit = new Array(stacklist.length);
     isize = new Array(stacklist.length);
+    iindex = new Array(stacklist.length);
 
     for (i = 0; i < stacklist.length; i++) {
 
         ilimit[i] = stacklist[i].getLimit() - stacklist[i].length;
         isize[i] = stacklist[i].length;
+        iindex[i] = i + 1;
     }
     //alert(stacklist);
     var barData = {
-        labels: ilimit,
+        labels: iindex,
         datasets: [
             {
                 label: 'Filled',
@@ -295,9 +308,9 @@ function paintList(stacklist) {
     /* New way to instantiate so that it do not thows Uncaught
      TypeError: (intermediate value).Pie is not a function" */
 
-     if (chart) {
+    if (chart) {
         chart.destroy();
-      }
+    }
     chart = new Chart(ctx, {
         type: 'bar',
         data: barData,
