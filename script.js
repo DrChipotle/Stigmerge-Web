@@ -11,7 +11,7 @@ High entropy list maker
 
 Restrict exchange range
 
-Add variable control over list parameters
+            DONE----Add variable control over list parameters
 
 ---IDEAS---
 change color of changing rows
@@ -23,7 +23,7 @@ change color of changing rows
             DONE----Random  x10 and x100 fix: Separate into fucmctions and call the algorithm
 Update graphics instead of redrawing: http://www.chartjs.org/docs/latest/developers/updates.html
 Fix bar index markers
-Fix list changing when hovering
+            DONE----Fix list changing when hovering
 
 Organize code
 
@@ -52,6 +52,9 @@ var listsize = 10;
 
 //Main list of stacks
 var mainStack;
+
+//Current chart
+var chart;
 
 
 
@@ -214,6 +217,17 @@ function b_randChangex100() {
 
 }
 
+function i_changeListN(){
+
+    listsize = document.getElementById("listNumberIn").value;
+
+}
+
+function i_changeListS(){
+
+    stacksize = document.getElementById("listSizeIn").value;;
+    
+}
 
 function paint() {
 
@@ -280,7 +294,11 @@ function paintList(stacklist) {
     //new Chart(ctx).Pie(pieData);
     /* New way to instantiate so that it do not thows Uncaught
      TypeError: (intermediate value).Pie is not a function" */
-    var myPieChart = new Chart(ctx, {
+
+     if (chart) {
+        chart.destroy();
+      }
+    chart = new Chart(ctx, {
         type: 'bar',
         data: barData,
         options: {

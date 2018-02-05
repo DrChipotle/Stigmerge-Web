@@ -35,6 +35,11 @@
 
     <p id="console">CONSOLE</p>
 
+    <form>
+
+
+        
+    </form>
     <button onclick="b_newRandList()">New Random list</button>
     <button onclick="b_newMinMaxList()">New Min-Max list</button>
 
@@ -43,6 +48,14 @@
 
     <button onclick="b_randChangex10()"> Random Exchange x 10</button>
     <button onclick="b_randChangex100()"> Random Exchange x 100</button>
+
+
+    <form>
+        Number of lists:
+        <input type="number" name="listNumber" id="listNumberIn" min="5" max="100" value="10" onchange="i_changeListN()">
+        Max list size:
+        <input type="number" name="listsize" id="listSizeIn" min="5" max="100" value="10" onchange="i_changeListS()">
+    </form>
 
      <!--<button onclick="paint()">Random Exchange</button>
 
