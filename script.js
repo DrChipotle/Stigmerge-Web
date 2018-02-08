@@ -9,6 +9,8 @@ TODOS
 
 High entropy list maker 
 
+Include chance in the switching
+
             DONE----Restrict exchange range
 
             DONE----Add variable control over list parameters
@@ -22,7 +24,7 @@ change color of changing rows
             DONE----Check random int function (?)
             DONE----Random  x10 and x100 fix: Separate into fucmctions and call the algorithm
 Update graphics instead of redrawing: http://www.chartjs.org/docs/latest/developers/updates.html
-Fix bar index markers
+            DONE----Fix bar index markers
             DONE----Fix list changing when hovering
 
 Organize code
@@ -59,6 +61,8 @@ var mainStack;
 //Current chart
 var chart;
 
+var mainCanvas;
+
 
 
 /*
@@ -93,6 +97,10 @@ limStack.prototype = Object.create(Array.prototype);
 
 // correct the constructor pointer because it points to Person
 limStack.prototype.constructor = limStack;
+
+
+
+
 
 
 /*
@@ -172,6 +180,42 @@ function randChange(range) {
 
 }
 
+//Empty bar: randChange on a single bar until empty
+
+//First, know when a bar gets pressed
+
+function emptyBar(barIndex) {
+
+    var curstack = mainStack[barIndex];
+    while (curstack.length > 0) {
+
+
+        //Pick a different random (non full) stack (receiver), now in range
+        var receiveimin = barIndex - exchangeRange >= 0 ? barIndex - exchangeRange : 0;
+
+        var receiveimax = barIndex + exchangeRange <= listsize - 1 ? barIndex + exchangeRange : listsize - 1;
+        var receiver;
+
+        do {
+            receivei = getRandomInt(receiveimin, receiveimax);
+            receiver = mainStack[receivei];
+
+        } while (receiver.limit - receiver.length == 0 || barIndex == receivei)
+
+
+        //document.getElementById("console").innerHTML = "\n " + sender.length + "/" + sender.limit + "_____" + receiver.length + "/" + receiver.limit;
+
+        console.log("Element from " + barIndex + " to [" + receiveimin + "," + receiveimax + "]." + " Final = " + receivei);
+        receiver.push(curstack.pop());
+        console.log(curstack.length);
+    }
+
+}
+
+//b_newRandList();
+//mainCanvas.addEventListener('click', handleClick, false);
+
+
 /*
     ------------------------------GUI------------------------------
 */
@@ -180,7 +224,11 @@ function randChange(range) {
 function b_newRandList() {
 
     mainStack = randStacks(listsize, stacksize);
+
+
     paintList(mainStack);
+
+
 
 }
 
@@ -195,8 +243,8 @@ function b_newMinMaxList() {
 function b_randChange() {
 
     randChange(exchangeRange);
-    paintList(mainStack);
-
+    //paintList(mainStack);
+    updateChart();
 
 }
 
@@ -256,11 +304,11 @@ function paint() {
             }]
     };
     // Get the context of the canvas element we want to select
-    var ctx = document.getElementById("myData").getContext("2d");
-    //new Chart(ctx).Pie(pieData);
+    var mainCanvas = document.getElementById("myData").getContext("2d");
+    //new Chart(mainCanvas).Pie(pieData);
     /* New way to instantiate so that it do not thows Uncaught
      TypeError: (intermediate value).Pie is not a function" */
-    var myPieChart = new Chart(ctx, {
+    var myPieChart = new Chart(mainCanvas, {
         type: 'bar',
         data: pieData
 
@@ -269,8 +317,14 @@ function paint() {
 
 }
 
-function paintList(stacklist) {
+function updateChart() {
 
+    console.log(data);
+    chart.data = genChartData(mainStack);
+    chart.update();
+}
+
+function genChartData(stacklist) {
 
     ilimit = new Array(stacklist.length);
     isize = new Array(stacklist.length);
@@ -301,19 +355,27 @@ function paintList(stacklist) {
         ]
     };
 
+    return barData;
+
+}
+
+function paintList(stacklist) {
+
+    var data = genChartData(stacklist);
+
 
     // Get the context of the canvas element we want to select
-    var ctx = document.getElementById("myData").getContext("2d");
-    //new Chart(ctx).Pie(pieData);
+    mainCanvas = document.getElementById("mainCanvas").getContext("2d");
+    //new Chart(mainCanvas).Pie(pieData);
     /* New way to instantiate so that it do not thows Uncaught
      TypeError: (intermediate value).Pie is not a function" */
 
     if (chart) {
         chart.destroy();
     }
-    chart = new Chart(ctx, {
+    chart = new Chart(mainCanvas, {
         type: 'bar',
-        data: barData,
+        data: data,
         options: {
             scales: {
                 yAxes: [{
@@ -334,10 +396,23 @@ function paintList(stacklist) {
             hover: {
                 // Overrides the global setting
                 mode: 'index'
-            }
+            },
+            onClick: handleClick
         }
+
 
     });
 
-
 }
+
+function handleClick(evt) {
+    var activeElement = chart.getElementAtEvent(evt);
+    console.log("CLICK");
+    console.log(activeElement[0]._index);
+
+    emptyBar(activeElement[0]._index);
+
+    paintList(mainStack);
+}
+
+
