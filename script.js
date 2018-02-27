@@ -154,11 +154,14 @@ function randChange(range) {
     var sendi;
     var sender
 
+
     do {
         sendi = getRandomInt(0, listsize - 1);
         sender = mainStack[sendi];
 
     } while (sender.length == 0)
+
+    console.log("Element from " + sendi);
 
     //Pick a different random (non full) stack (receiver), now in range
     var receiveimin = sendi - range >= 0 ? sendi - range : 0;
@@ -166,16 +169,19 @@ function randChange(range) {
     var receiveimax = sendi + range <= listsize - 1 ? sendi + range : listsize - 1;
     var receiver;
 
+
     do {
         receivei = getRandomInt(receiveimin, receiveimax);
         receiver = mainStack[receivei];
+
+        console.log(receiver.limit - receiver.length);
 
     } while (receiver.limit - receiver.length == 0 || sendi == receivei)
 
 
     //document.getElementById("console").innerHTML = "\n " + sender.length + "/" + sender.limit + "_____" + receiver.length + "/" + receiver.limit;
 
-    console.log("Element from " + sendi + " to [" + receiveimin + "," + receiveimax + "]." + " Final = " + receivei);
+    console.log( " to [" + receiveimin + "," + receiveimax + "]." + " Final = " + receivei);
     receiver.push(sender.pop());
 
 }
@@ -243,8 +249,8 @@ function b_newMinMaxList() {
 function b_randChange() {
 
     randChange(exchangeRange);
-    //paintList(mainStack);
-    updateChart();
+    paintList(mainStack);
+    //updateChart();
 
 }
 
@@ -253,6 +259,7 @@ function b_randChangex10() {
 
     for (i = 0; i < 10; i++) {
         randChange(exchangeRange);
+        console.log(i);
 
     }
     paintList(mainStack);
@@ -263,6 +270,7 @@ function b_randChangex100() {
 
     for (i = 0; i < 100; i++) {
         randChange(exchangeRange);
+        console.log(i);
 
     }
     paintList(mainStack);
