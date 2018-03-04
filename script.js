@@ -5,14 +5,21 @@
 TODOS
 
 ---PENDING REQUIREMENTS---
+
+______TO SHIP
+1. Weighted Exchanges
+            DONE----Uniform size, randomly filled lists
+3. Remove boundary conditions
+
+______NEXT
+4. Iterate all lists
+
+
+
             DONE----Set up debbuging
-
 High entropy list maker 
-
 Include chance in the switching
-
             DONE----Restrict exchange range
-
             DONE----Add variable control over list parameters
 
 ---IDEAS---
@@ -26,8 +33,6 @@ change color of changing rows
 Update graphics instead of redrawing: http://www.chartjs.org/docs/latest/developers/updates.html
             DONE----Fix bar index markers
             DONE----Fix list changing when hovering
-
-Organize code
 
 Change HTML to follow good practice lists
     Programatic event handlers
@@ -113,6 +118,12 @@ limStack.prototype.constructor = limStack;
 
 function randStacks(nlists, maxsize) {
 
+
+
+
+
+
+    
     var stacklist = new Array(nlists);
     var curlimStack;
 
@@ -134,6 +145,31 @@ function randStacks(nlists, maxsize) {
     return stacklist;
 
 }
+
+//Generates an array of @nlists@ stacks with @maxsize@, filled a random amount
+
+
+function uniformStacks(nlists , maxsize){
+
+    var stacklist = new Array(nlists);
+    var curlimStack;
+
+    for(i = 0; i < nlists; i++){
+
+	curlimStack = new limStack(maxsize);
+	var curStackFill = getRandomInt(0, maxsize);
+
+	for(j=0; j < curStackFill; j++){
+	    curlimStack.push(j);
+	}
+	stacklist[i] = curlimStack;
+    }
+    
+    return stacklist;
+
+}
+
+
 
 //Generates a random int between min and max (Inclusive)
 
@@ -236,6 +272,13 @@ function b_newRandList() {
 
 
 
+}
+
+function b_newUniList(){
+
+    mainStack = uniformStacks(listsize, stacksize);
+
+    paintList(mainStack);
 }
 
 function b_newMinMaxList() {
