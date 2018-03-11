@@ -123,7 +123,7 @@ function randStacks(nlists, maxsize) {
 
 
 
-    
+
     var stacklist = new Array(nlists);
     var curlimStack;
 
@@ -149,22 +149,22 @@ function randStacks(nlists, maxsize) {
 //Generates an array of @nlists@ stacks with @maxsize@, filled a random amount
 
 
-function uniformStacks(nlists , maxsize){
+function uniformStacks(nlists, maxsize) {
 
     var stacklist = new Array(nlists);
     var curlimStack;
 
-    for(i = 0; i < nlists; i++){
+    for (i = 0; i < nlists; i++) {
 
-	curlimStack = new limStack(maxsize);
-	var curStackFill = getRandomInt(0, maxsize);
+        curlimStack = new limStack(maxsize);
+        var curStackFill = getRandomInt(0, maxsize);
 
-	for(j=0; j < curStackFill; j++){
-	    curlimStack.push(j);
-	}
-	stacklist[i] = curlimStack;
+        for (j = 0; j < curStackFill; j++) {
+            curlimStack.push(j);
+        }
+        stacklist[i] = curlimStack;
     }
-    
+
     return stacklist;
 
 }
@@ -214,11 +214,17 @@ function randChange(range) {
 
     } while (receiver.limit - receiver.length == 0 || sendi == receivei)
 
+    //Find probability and exchange if possible
+    var chanceEx = receiver.length / (receiver.length + sender.length);
+    var chance = Math.random();
+
+    if (chance < chanceEx) {
+        receiver.push(sender.pop());
+    }
 
     //document.getElementById("console").innerHTML = "\n " + sender.length + "/" + sender.limit + "_____" + receiver.length + "/" + receiver.limit;
 
-    console.log( " to [" + receiveimin + "," + receiveimax + "]." + " Final = " + receivei);
-    receiver.push(sender.pop());
+    console.log(" to [" + receiveimin + "," + receiveimax + "]." + " Final = " + receivei + " Chance " + chanceEx +" Was " + chance );
 
 }
 
@@ -274,7 +280,7 @@ function b_newRandList() {
 
 }
 
-function b_newUniList(){
+function b_newUniList() {
 
     mainStack = uniformStacks(listsize, stacksize);
 
