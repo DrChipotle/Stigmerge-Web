@@ -7,9 +7,14 @@ TODOS
 ---PENDING REQUIREMENTS---
 
 ______TO SHIP
-1. Weighted Exchanges
+            DONE Weighted Exchanges
             DONE----Uniform size, randomly filled lists
 3. Remove boundary conditions
+5. Organize so much...
+6. Add flags to each stacklist
+
+______BUGS
+    Blows up when noone to exchange with    
 
 ______NEXT
 4. Iterate all lists
@@ -119,11 +124,6 @@ limStack.prototype.constructor = limStack;
 function randStacks(nlists, maxsize) {
 
 
-
-
-
-
-
     var stacklist = new Array(nlists);
     var curlimStack;
 
@@ -180,9 +180,14 @@ function getRandomInt(min, max) {
 }
 
 
-//TODO Add timeout (?)
+//TODO Partial rewrite
+/* 
+    Add exchanges candidates to list, if exchange is impossible, return false
+    Add option to alter algorithm
 
-function randChange(range) {
+*/
+
+function randChange(range, force) {
 
     //Pick a random (non empty) stack (sender). This should work pretty much the same as before
 
@@ -190,51 +195,103 @@ function randChange(range) {
     var sendi;
     var sender
 
-
     do {
         sendi = getRandomInt(0, listsize - 1);
         sender = mainStack[sendi];
 
     } while (sender.length == 0)
+    
 
-    console.log("Element from " + sendi);
+    //Set list of exchange candidates, allow warpping
+    var receiveimin = sendi - range;
 
-    //Pick a different random (non full) stack (receiver), now in range
-    var receiveimin = sendi - range >= 0 ? sendi - range : 0;
-
-    var receiveimax = sendi + range <= listsize - 1 ? sendi + range : listsize - 1;
-    var receiver;
+    var receiveimax = sendi + range;
 
 
-    do {
-        receivei = getRandomInt(receiveimin, receiveimax);
-        receiver = mainStack[receivei];
 
-        console.log(receiver.limit - receiver.length);
+    receivei = getRandomInt(receiveimin, receiveimax);
+    receiver = mainStack[receivei];
 
-    } while (receiver.limit - receiver.length == 0 || sendi == receivei)
+    var candidates = new Array;
 
-    //Find probability and exchange if possible
-    var chanceEx = receiver.length / (receiver.length + sender.length);
-    var chance = Math.random();
+    //Go forwards...
+    for (i = receivei + 1; i <= receivei + range; i++) {
+        if (i <= listsize) {
+            candidates.push(i);
 
-    if (chance < chanceEx) {
-        receiver.push(sender.pop());
+        }
+        else {
+            candidates.push(i - listsize);
+        }
     }
+
+    //...and backwards 
+    for (i = receivei - 1; i >= receivei - range; i--) {
+        if (i >= 0) {
+            candidates.push(i);
+
+        }
+        else {
+            candidates.push(i + listsize);
+        }
+    }
+    console.log("Target: " + receivei + " Candidates: " + candidates);
+
+    //Pick from candidates. Before proceding, make sure exchange is possible
+    var target = -1;
+
+    while (candidates.length > 0 && target == -1) {
+
+        targeti = getRandomInt(candidates.length - 1, 0)
+        target = mainStack[candidates[targeti]];
+
+
+        if (target.limit == target.length) {
+            //full... remove this one
+            candidates.splice(targeti, 1);
+            target = -1;
+        }
+
+
+    }
+
+    if (candidates.length == 0) {
+        console.log("Exchange impossible");
+        return false;
+    }
+
+
+    if (!force) {
+
+        //Find probability and exchange if possible
+        var chanceEx = receiver.length / (receiver.length + sender.length);
+        var chance = Math.random();
+
+        if (chance < chanceEx) {
+            console.log(" to [" + receiveimin + "," + receiveimax + "]." + " Final = " + receivei + " Chance " + chanceEx + " Was " + chance);
+        }
+        else {
+            return true;
+        }
+    }
+
+    receiver.push(sender.pop());
+
 
     //document.getElementById("console").innerHTML = "\n " + sender.length + "/" + sender.limit + "_____" + receiver.length + "/" + receiver.limit;
 
-    console.log(" to [" + receiveimin + "," + receiveimax + "]." + " Final = " + receivei + " Chance " + chanceEx +" Was " + chance );
 
 }
 
 //Empty bar: randChange on a single bar until empty
+//TODO: Actually call the function on force mode
 
 //First, know when a bar gets pressed
 
 function emptyBar(barIndex) {
 
     var curstack = mainStack[barIndex];
+
     while (curstack.length > 0) {
 
 
