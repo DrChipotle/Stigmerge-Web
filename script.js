@@ -7,14 +7,14 @@ TODOS
 ---PENDING REQUIREMENTS---
 
 ______TO SHIP
-            DONE Weighted Exchanges
+            DONE----Weighted Exchanges
             DONE----Uniform size, randomly filled lists
-3. Remove boundary conditions
-5. Organize so much...
+            DONE----Remove boundary conditions
+5. Organize a bit less...
 6. Add flags to each stacklist
 
 ______BUGS
-    Blows up when noone to exchange with    
+    KINDA DONE, PENDING update emptying method Blows up when no-one to exchange with    
 
 ______NEXT
 4. Iterate all lists
@@ -23,7 +23,7 @@ ______NEXT
 
             DONE----Set up debbuging
 High entropy list maker 
-Include chance in the switching
+            DONE----Include chance in the switching
             DONE----Restrict exchange range
             DONE----Add variable control over list parameters
 
@@ -191,32 +191,34 @@ function randChange(range, force) {
 
     //Pick a random (non empty) stack (sender). This should work pretty much the same as before
 
-
     var sendi;
-    var sender
 
     do {
         sendi = getRandomInt(0, listsize - 1);
-        sender = mainStack[sendi];
 
-    } while (sender.length == 0)
-    
+    } while (mainStack[sendi].length == 0)
 
+    console.log("Moving from " + sendi);
+
+    return randSend(range, force, sendi);
+
+}
+
+function randSend(range, force, sendi) {
+
+    sender = mainStack[sendi];
     //Set list of exchange candidates, allow warpping
     var receiveimin = sendi - range;
-
     var receiveimax = sendi + range;
 
-
-
-    receivei = getRandomInt(receiveimin, receiveimax);
-    receiver = mainStack[receivei];
+    //receivei = getRandomInt(receiveimin, receiveimax);
+    //receiver = mainStack[receivei];
 
     var candidates = new Array;
 
     //Go forwards...
-    for (i = receivei + 1; i <= receivei + range; i++) {
-        if (i <= listsize) {
+    for (i = sendi + 1; i <= sendi + range; i++) {
+        if (i < listsize) {
             candidates.push(i);
 
         }
@@ -226,7 +228,7 @@ function randChange(range, force) {
     }
 
     //...and backwards 
-    for (i = receivei - 1; i >= receivei - range; i--) {
+    for (i = sendi - 1; i >= sendi - range; i--) {
         if (i >= 0) {
             candidates.push(i);
 
@@ -235,47 +237,65 @@ function randChange(range, force) {
             candidates.push(i + listsize);
         }
     }
-    console.log("Target: " + receivei + " Candidates: " + candidates);
-
-    //Pick from candidates. Before proceding, make sure exchange is possible
-    var target = -1;
-
-    while (candidates.length > 0 && target == -1) {
-
-        targeti = getRandomInt(candidates.length - 1, 0)
-        target = mainStack[candidates[targeti]];
 
 
-        if (target.limit == target.length) {
-            //full... remove this one
-            candidates.splice(targeti, 1);
-            target = -1;
+
+
+    //Pick from candidates. Before continuing, make sure exchange is possible
+    var targeti = -1;
+    var target;
+
+    //Candidates left and no target
+    while (candidates.length > 0 && targeti == -1) {
+
+        var tempi = getRandomInt(0, candidates.length - 1);
+        targeti = candidates[tempi];
+        target = mainStack[targeti];
+        //target = mainStack[candidates[tempi]];
+        //console.log("Target " + targeti + " Target.limit " + target.limit + " Target.length " + target.length);
+
+        if (target.limit > target.length) {
+
         }
+        else {
+            //full... remove this candidate
+            candidates.splice(tempi, 1);
+            targeti = -1;
 
+        }
 
     }
 
+    //console.log("Target: " + targeti + " Candidates: " + candidates);
+
+
+    //console.log("Candidates left: " + candidates);
     if (candidates.length == 0) {
         console.log("Exchange impossible");
         return false;
     }
 
+    console.log("Moving to " + targeti);
 
     if (!force) {
 
         //Find probability and exchange if possible
-        var chanceEx = receiver.length / (receiver.length + sender.length);
+        var chanceEx = target.length / (target.length + sender.length);
         var chance = Math.random();
+        console.log(" Final = " + targeti + " Moving if " + chanceEx + " > " + chance);
 
-        if (chance < chanceEx) {
-            console.log(" to [" + receiveimin + "," + receiveimax + "]." + " Final = " + receivei + " Chance " + chanceEx + " Was " + chance);
+
+        if (chance > chanceEx) {
+            console.log("Sent");
         }
         else {
+            console.log("Kept");
             return true;
         }
     }
 
-    receiver.push(sender.pop());
+    target.push(sender.pop());
+    return true;
 
 
     //document.getElementById("console").innerHTML = "\n " + sender.length + "/" + sender.limit + "_____" + receiver.length + "/" + receiver.limit;
@@ -292,6 +312,7 @@ function emptyBar(barIndex) {
 
     var curstack = mainStack[barIndex];
 
+    /* 
     while (curstack.length > 0) {
 
 
@@ -314,6 +335,21 @@ function emptyBar(barIndex) {
         receiver.push(curstack.pop());
         console.log(curstack.length);
     }
+    */
+
+    while (curstack.length > 0) {
+
+        if (!randSend(exchangeRange, true, barIndex)) {
+            console.log("Done");
+            return false;
+        }
+
+    }
+
+
+
+
+
 
 }
 
@@ -354,7 +390,7 @@ function b_newMinMaxList() {
 //Calls one random change and updates lists
 function b_randChange() {
 
-    randChange(exchangeRange);
+    randChange(exchangeRange, false);
     paintList(mainStack);
     //updateChart();
 
@@ -363,9 +399,9 @@ function b_randChange() {
 
 function b_randChangex10() {
 
-    for (i = 0; i < 10; i++) {
-        randChange(exchangeRange);
-        console.log(i);
+    for (var j = 0; j < 10; j++) {
+        randChange(exchangeRange, false);
+        console.log("Exchange n " + j);
 
     }
     paintList(mainStack);
@@ -374,8 +410,8 @@ function b_randChangex10() {
 
 function b_randChangex100() {
 
-    for (i = 0; i < 100; i++) {
-        randChange(exchangeRange);
+    for (var i = 0; i < 100; i++) {
+        randChange(exchangeRange, false);
         console.log(i);
 
     }
@@ -448,7 +484,7 @@ function genChartData(stacklist) {
 
         ilimit[i] = stacklist[i].getLimit() - stacklist[i].length;
         isize[i] = stacklist[i].length;
-        iindex[i] = i + 1;
+        iindex[i] = i;
     }
     //alert(stacklist);
     var barData = {
@@ -521,8 +557,7 @@ function paintList(stacklist) {
 
 function handleClick(evt) {
     var activeElement = chart.getElementAtEvent(evt);
-    console.log("CLICK");
-    console.log(activeElement[0]._index);
+    console.log("Clicked on " +activeElement[0]._index);
 
     emptyBar(activeElement[0]._index);
 
