@@ -392,8 +392,14 @@ function iterExchange(times){
 
 function stdDev(avr){
 
-
-
+    ans = 0;
+    for(m=0 ; m < listsize ;m++){
+    
+        ans += Math.pow(mainStack[m].length-avr,2);
+        console.log("m " + mainStack[m].length + " ans " + ans);
+    }
+    ans = ans/listsize;
+    return Math.sqrt(ans); 
 }
 
 function listAverage(){
@@ -479,6 +485,7 @@ function b_play(){
 function b_test1(){
 
     console.log(listAverage());
+    console.log(stdDev(listAverage()));
 }
 
 
