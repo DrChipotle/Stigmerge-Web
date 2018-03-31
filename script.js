@@ -7,10 +7,19 @@ TODOS
 ---PENDING REQUIREMENTS---
 
 ______TO SHIP
+
+    List iteration
+    Standard dev 
+
+    Add flags
+    Fix animations
+    Add inflows and outflows
+
+
             DONE----Weighted Exchanges
             DONE----Uniform size, randomly filled lists
             DONE----Remove boundary conditions
-5. Organize a bit less...
+5. Organize a bit more...
 6. Add flags to each stacklist
 
 ______BUGS
@@ -282,7 +291,7 @@ function randSend(range, force, sendi) {
         //Find probability and exchange if possible
         var chanceEx = target.length / (target.length + sender.length);
         var chance = Math.random();
-        console.log(" Final = " + targeti + " Moving if " + chanceEx + " > " + chance);
+        console.log(" Final = " + targeti + " Moving if " + chanceEx + " < " + chance);
 
 
         if (chance > chanceEx) {
@@ -335,6 +344,13 @@ function emptyBar(barIndex) {
         receiver.push(curstack.pop());
         console.log(curstack.length);
     }
+
+
+    IMPLEMENT STANDARD DEVIATION SELECTOR
+    CICLE THROUGH 
+    INFLOWS AND OUTFLOWS
+
+
     */
 
     while (curstack.length > 0) {
@@ -356,6 +372,41 @@ function emptyBar(barIndex) {
 //b_newRandList();
 //mainCanvas.addEventListener('click', handleClick, false);
 
+function iterExchange(times){
+
+   
+    
+    for(k=0 ; k < listsize ;k++){
+        console.log("ER " + exchangeRange + " force " + false + " bar " + k);
+        randSend(exchangeRange, false, k);
+
+    }
+
+    if (times >0){
+        iterExchange(times-1);
+    }
+
+
+
+}
+
+function stdDev(avr){
+
+
+
+}
+
+function listAverage(){
+
+    count = 0;
+    for(k=0 ; k < listsize ;k++){
+    
+        count += mainStack[k].length;
+    
+    }
+
+    return count/listsize;
+}
 
 /*
     ------------------------------GUI------------------------------
@@ -418,6 +469,19 @@ function b_randChangex100() {
     paintList(mainStack);
 
 }
+
+function b_play(){
+
+    iterExchange(1);
+    paintList(mainStack);
+}
+
+function b_test1(){
+
+    console.log(listAverage());
+}
+
+
 
 function i_changeListN() {
 
