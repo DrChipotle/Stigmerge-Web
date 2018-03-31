@@ -8,8 +8,8 @@ TODOS
 
 ______TO SHIP
 
-    List iteration
-    Standard dev 
+            DONE----List iteration
+            DONE----Standard dev 
 
     Add flags
     Fix animations
@@ -372,46 +372,46 @@ function emptyBar(barIndex) {
 //b_newRandList();
 //mainCanvas.addEventListener('click', handleClick, false);
 
-function iterExchange(times){
+function iterExchange(times) {
 
-   
-    
-    for(k=0 ; k < listsize ;k++){
+
+
+    for (k = 0; k < listsize; k++) {
         console.log("ER " + exchangeRange + " force " + false + " bar " + k);
         randSend(exchangeRange, false, k);
 
     }
 
-    if (times >0){
-        iterExchange(times-1);
+    if (times > 0) {
+        iterExchange(times - 1);
     }
 
 
 
 }
 
-function stdDev(avr){
+function stdDev(avr) {
 
     ans = 0;
-    for(m=0 ; m < listsize ;m++){
-    
-        ans += Math.pow(mainStack[m].length-avr,2);
+    for (m = 0; m < listsize; m++) {
+
+        ans += Math.pow(mainStack[m].length - avr, 2);
         console.log("m " + mainStack[m].length + " ans " + ans);
     }
-    ans = ans/listsize;
-    return Math.sqrt(ans); 
+    ans = ans / listsize;
+    return Math.sqrt(ans);
 }
 
-function listAverage(){
+function listAverage() {
 
     count = 0;
-    for(k=0 ; k < listsize ;k++){
-    
+    for (k = 0; k < listsize; k++) {
+
         count += mainStack[k].length;
-    
+
     }
 
-    return count/listsize;
+    return count / listsize;
 }
 
 /*
@@ -476,16 +476,27 @@ function b_randChangex100() {
 
 }
 
-function b_play(){
+function b_play() {
 
     iterExchange(1);
     paintList(mainStack);
 }
 
-function b_test1(){
+function b_test1() {
 
     console.log(listAverage());
     console.log(stdDev(listAverage()));
+}
+
+function b_balance() {
+
+    //console.log("??????");
+    while (stdDev(listAverage()) > 1.2) {
+        iterExchange(1);
+        console.log("Ok...");
+    }
+    //console.log("??????");
+    paintList(mainStack);
 }
 
 
@@ -628,7 +639,7 @@ function paintList(stacklist) {
 
 function handleClick(evt) {
     var activeElement = chart.getElementAtEvent(evt);
-    console.log("Clicked on " +activeElement[0]._index);
+    console.log("Clicked on " + activeElement[0]._index);
 
     emptyBar(activeElement[0]._index);
 
