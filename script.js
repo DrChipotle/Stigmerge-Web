@@ -10,7 +10,7 @@ ______TO SHIP
 
             DONE----List iteration
             DONE----Standard dev 
-
+    Change Std Dev to percent    
     Add flags
     Fix animations
     Add inflows and outflows
@@ -73,6 +73,9 @@ var listsize = 10;
 
 //Max range for exchanges
 var exchangeRange = 1;
+
+//Target Standard Deviation
+var stdDevTarget = 1.5;
 
 //Main list of stacks
 var mainStack;
@@ -491,12 +494,14 @@ function b_test1() {
 function b_balance() {
 
     //console.log("??????");
-    while (stdDev(listAverage()) > 1.2) {
+    n=0;
+    while (stdDev(listAverage()) > stdDevTarget) {
         iterExchange(1);
-        console.log("Ok...");
+        n++;
     }
     //console.log("??????");
     paintList(mainStack);
+    alert(n + " passes until standard dev of " + stdDevTarget);
 }
 
 
@@ -516,6 +521,14 @@ function i_changeListS() {
 function i_changeRange() {
 
     exchangeRange = parseInt(document.getElementById("exchangeRangeIn").value);
+    //console.log(exchangeRange);
+
+}
+
+function i_changeSTDEV() {
+
+    stdDevTarget = parseFloat(document.getElementById("stdDevN").value);
+    
     //console.log(exchangeRange);
 
 }
